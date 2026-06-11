@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Featured Playlist - Music Playlist Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .featured-container {
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 220px;
+        }
+
+        .featured-nav {
+            position: fixed;
+            top: 20px;
+            left: 40px;
+            z-index: 100;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-4px);
+        }
+
+        .featured-content {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+            margin-top: 40px;
+        }
+
+        .featured-left {
+            flex-shrink: 0;
+        }
+
+        .featured-cover {
+            width: 400px;
+            height: 400px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 24px;
+        }
+
+        .featured-playlist-name {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .featured-playlist-author {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .featured-playlist-count {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .featured-right {
+            flex: 1;
+        }
+
+        .featured-songs-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .featured-song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .featured-song-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(150, 100, 90, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .featured-song-item:hover {
+            background: rgba(150, 100, 90, 0.5);
+            transform: translateX(4px);
+        }
+
+        .featured-song-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+            min-width: 40px;
+        }
+
+        .featured-song-info {
+            flex: 1;
+        }
+
+        .featured-song-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .featured-song-artist {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .featured-song-duration {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .featured-loading {
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            padding: 100px;
+        }
+
+        .featured-error {
+            text-align: center;
+            font-size: 20px;
+            color: rgba(255, 100, 100, 0.9);
+            padding: 100px;
+        }
+
+        @media (max-width: 1024px) {
+            .featured-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .featured-cover {
+                width: 100%;
+                max-width: 400px;
+                height: auto;
+            }
+
+            .featured-playlist-name {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="featured-nav">
+        <a href="index.html" class="back-link">
+            <span>←</span>
+            <span>Back to All Playlists</span>
+        </a>
+    </nav>
+
+    <!-- Featured Playlist Content -->
+    <div class="featured-container">
+        <div id="featured-content">
+            <p class="featured-loading">Loading featured playlist...</p>
+        </div>
+    </div>
+
+    <!-- Background spotlight effects -->
+    <div class="spotlight-oval spotlight-oval-1"></div>
+    <div class="spotlight-oval spotlight-oval-2"></div>
+    <div class="spotlight-oval spotlight-oval-3"></div>
+
+    <script src="config.js"></script>
+    <script src="featured.js"></script>
+</body>
+</html>

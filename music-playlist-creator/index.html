@@ -3,25 +3,515 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Music Playlist Explorer</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <!-- Your header content here -->
+    <!-- HEADER -->
+    <header id="main-header">
+        <span class="header-left" id="author-name">by Anny</span>
+        <span class="header-right" id="organization-name">Salesforce x Codepath</span>
     </header>
 
-    <main> 
-        <!-- Your main content here -->
-    </main>
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <!-- Search Bar -->
+        <div id="search-bar" class="search-container">
+            <input type="text" id="search-input" class="search-field" placeholder="search...">
+            <div id="search-dropdown" class="search-dropdown hidden"></div>
+        </div>
+        <!-- Spotlight Effect (3 layered ovals) -->
+        <div class="spotlight-oval spotlight-oval-1"></div>
+        <div class="spotlight-oval spotlight-oval-2"></div>
+        <div class="spotlight-oval spotlight-oval-2"></div>
+        <div class="spotlight-oval spotlight-oval-2"></div>
+        <div class="spotlight-oval spotlight-oval-support-2"></div>
+        <div class="spotlight-oval spotlight-oval-3"></div>
 
-    <footer>
-        <!-- Your footer content here -->
-    </footer>
-    <script src="data/data.js"></script>
+        <!-- Horizontal Carousel of Cards -->
+        <div class="carousel-container">
+            <!-- Far Left Card (partially cut off) -->
+            <div class="carousel-card carousel-card-far-left">
+                <img class="carousel-card-cover" src="https://via.placeholder.com/200x225" alt="Playlist cover">
+                <div class="carousel-card-info">
+                    <p class="carousel-card-title">Summer Vibes</p>
+                    <p class="carousel-card-author">Various Artists</p>
+                </div>
+            </div>
+
+            <!-- Left Card -->
+            <div class="carousel-card carousel-card-left">
+                <img class="carousel-card-cover" src="https://via.placeholder.com/220x240" alt="Playlist cover">
+                <div class="carousel-card-info">
+                    <p class="carousel-card-title">Chill Beats</p>
+                    <p class="carousel-card-author">Lo-Fi Collective</p>
+                </div>
+            </div>
+
+            <!-- Center Card (featured/active) -->
+            <div class="carousel-card carousel-card-center">
+                <img class="carousel-card-cover" src="https://via.placeholder.com/260x270" alt="Way Up In The Sky cover">
+                <div class="carousel-card-info">
+                    <p class="carousel-card-title">way up in the sky</p>
+                    <p class="carousel-card-author">Bruno Mars</p>
+                </div>
+            </div>
+
+            <!-- Right Card -->
+            <div class="carousel-card carousel-card-right">
+                <img class="carousel-card-cover" src="https://via.placeholder.com/220x240" alt="Playlist cover">
+                <div class="carousel-card-info">
+                    <p class="carousel-card-title">Midnight Jazz</p>
+                    <p class="carousel-card-author">Jazz Collective</p>
+                </div>
+            </div>
+
+            <!-- Far Right Card (partially cut off) -->
+            <div class="carousel-card carousel-card-far-right">
+                <img class="carousel-card-cover" src="https://via.placeholder.com/200x225" alt="Playlist cover">
+                <div class="carousel-card-info">
+                    <p class="carousel-card-title">Pop Remixes</p>
+                    <p class="carousel-card-author">DJ Mixmaster</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Music Playlist Title with Perspective -->
+        <h1 id="main-title" class="music-playlist-title">
+            <span class="title-line-1">MUSIC</span>
+            <span class="title-line-2">PLAYLIST</span>
+        </h1>
+
+        <!-- Add Category Button -->
+        <button id="add-category-btn" class="add-category-button">+ add category</button>
+    </section>
+
+    <!-- Add Category Modal -->
+    <div id="add-category-modal" class="modal-overlay hidden">
+        <div class="add-category-modal-box">
+            <button class="modal-close" id="close-add-category-modal">✕</button>
+            <h2 class="add-category-title">Add New Category</h2>
+            <p class="add-category-description">Create a new playlist category</p>
+            <input type="text" id="category-name-input" class="category-name-input" placeholder="Category name (e.g., Workout, Chill)">
+            <button id="submit-category-btn" class="submit-category-btn">Create Category</button>
+            <p id="add-category-status" class="add-category-status"></p>
+        </div>
+    </div>
+
+    <!-- Add Playlist to Category Modal -->
+    <div id="add-playlist-modal" class="modal-overlay hidden">
+        <div class="add-playlist-modal-box">
+            <button class="modal-close" id="close-add-playlist-modal">✕</button>
+            <h2 class="add-playlist-title">Add YouTube Playlist</h2>
+            <p class="add-playlist-description" id="playlist-category-name"></p>
+            <input type="text" id="playlist-url-input" class="playlist-url-input" placeholder="https://www.youtube.com/playlist?list=...">
+            <button id="submit-playlist-btn" class="submit-playlist-btn">Add Playlist</button>
+            <p id="add-playlist-status" class="add-playlist-status"></p>
+        </div>
+    </div>
+
+    <!-- Playlist Detail Modal -->
+    <div id="playlist-detail-modal" class="modal-overlay hidden">
+        <div class="playlist-detail-modal-box">
+            <button class="modal-close" id="close-playlist-detail-modal">✕</button>
+            <img id="detail-playlist-cover" class="detail-playlist-cover" src="" alt="Playlist cover">
+            <h2 id="detail-playlist-name" class="detail-playlist-name"></h2>
+            <p id="detail-playlist-author" class="detail-playlist-author"></p>
+            <button id="get-description-btn" class="get-description-btn">Get AI Description</button>
+            <div id="ai-description-container" class="ai-description-container hidden">
+                <p id="ai-description-text" class="ai-description-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MUSIC PLAYER VIEW (hidden by default) -->
+    <section id="music-player-view" class="music-player-container">
+        <!-- Left Side - Big Player Card -->
+        <div class="player-card">
+            <img id="player-cover" class="player-cover-image" src="https://via.placeholder.com/480x280" alt="Now playing cover">
+            <div class="player-info">
+                <span id="player-song-title" class="player-song-title">JUMP</span>
+                <span id="player-artist" class="player-artist">Blackpink</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-filled"></div>
+            </div>
+            <div class="playback-controls">
+                <button class="control-btn shuffle-btn">🔀</button>
+                <button class="control-btn prev-btn">⏮</button>
+                <button class="control-btn rewind-btn">⏪</button>
+                <button class="control-btn play-btn">▶️</button>
+                <button class="control-btn forward-btn">⏩</button>
+                <button class="control-btn next-btn">⏭</button>
+                <button class="control-btn repeat-btn">🔁</button>
+            </div>
+            <div class="player-likes">
+                <span class="player-heart">❤</span>
+                <span id="player-like-count" class="player-like-count">1,000,000</span>
+            </div>
+        </div>
+
+        <!-- Right Side - Playlist Name + Waiting List -->
+        <div class="waiting-list-container">
+            <h2 id="waiting-list-title" class="waiting-list-title">blackpink</h2>
+            <div class="waiting-list">
+                <div class="waiting-song active-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">ice cream</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">How You Like That</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">DDU-DU DDU-DU</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">Kill This Love</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">BOOMBAYAH</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">Playing with Fire</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+                <div class="waiting-song">
+                    <img class="waiting-song-thumbnail" src="https://via.placeholder.com/48x48" alt="Song thumbnail">
+                    <div class="waiting-song-info">
+                        <p class="waiting-song-name">STAY</p>
+                        <p class="waiting-song-artist">blackpink</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLAYLIST SECTIONS -->
+    <section id="all-playlists">
+        <!-- FAVORITE PLAYLISTS -->
+        <div class="playlist-category" id="favorite-category">
+            <h2 class="category-title">favorite</h2>
+            <div class="playlist-cards" id="favorite-cards">
+                <div class="playlist-card" data-playlist-id="fav-1">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Summer Vibes cover">
+                    <div class="card-info">
+                        <p class="card-title">Summer Vibes</p>
+                        <p class="card-author">Various Artists</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">1,234</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="fav-2">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Chill Beats cover">
+                    <div class="card-info">
+                        <p class="card-title">Chill Beats</p>
+                        <p class="card-author">Lo-Fi Collective</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">3,567</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="fav-3">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Workout Energy cover">
+                    <div class="card-info">
+                        <p class="card-title">Workout Energy</p>
+                        <p class="card-author">Fitness Music Studio</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">892</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="fav-4">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Midnight Jazz cover">
+                    <div class="card-info">
+                        <p class="card-title">Midnight Jazz</p>
+                        <p class="card-author">Jazz Collective</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">2,109</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REMIX PLAYLISTS -->
+        <div class="playlist-category" id="remix-category">
+            <h2 class="category-title">remix</h2>
+            <div class="playlist-cards" id="remix-cards">
+                <div class="playlist-card" data-playlist-id="remix-1">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Pop Remixes cover">
+                    <div class="card-info">
+                        <p class="card-title">Pop Remixes</p>
+                        <p class="card-author">DJ Mixmaster</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">4,521</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="remix-2">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="EDM Hits Reimagined cover">
+                    <div class="card-info">
+                        <p class="card-title">EDM Hits Reimagined</p>
+                        <p class="card-author">Electronic Dreams</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">6,789</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="remix-3">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Classic Rock Reloaded cover">
+                    <div class="card-info">
+                        <p class="card-title">Classic Rock Reloaded</p>
+                        <p class="card-author">Rock Revival</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">1,456</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="remix-4">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Hip Hop Remixed cover">
+                    <div class="card-info">
+                        <p class="card-title">Hip Hop Remixed</p>
+                        <p class="card-author">Urban Beats</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">3,245</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRENDING PLAYLISTS -->
+        <div class="playlist-category" id="trending-category">
+            <h2 class="category-title">trending</h2>
+            <div class="playlist-cards" id="trending-cards">
+                <div class="playlist-card" data-playlist-id="trending-1">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Viral Hits 2026 cover">
+                    <div class="card-info">
+                        <p class="card-title">Viral Hits 2026</p>
+                        <p class="card-author">TikTok Charts</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">12,567</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="trending-2">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Top 50 Global cover">
+                    <div class="card-info">
+                        <p class="card-title">Top 50 Global</p>
+                        <p class="card-author">Spotify Charts</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">25,890</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="trending-3">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="New Music Friday cover">
+                    <div class="card-info">
+                        <p class="card-title">New Music Friday</p>
+                        <p class="card-author">Music Weekly</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">8,432</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="playlist-card" data-playlist-id="trending-4">
+                    <img class="card-cover" src="https://via.placeholder.com/200x196" alt="Rising Stars cover">
+                    <div class="card-info">
+                        <p class="card-title">Rising Stars</p>
+                        <p class="card-author">Indie Discoveries</p>
+                        <div class="card-likes">
+                            <button class="heart-btn">❤</button>
+                            <span class="like-count">5,678</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="edit-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOTTOM SPOTLIGHT (rising sun effect) -->
+    <div class="bottom-spotlight">
+        <div class="bottom-oval bottom-oval-1"></div>
+        <div class="bottom-oval bottom-oval-2"></div>
+        <div class="bottom-oval bottom-oval-3"></div>
+
+    </div>
+
+
+    <!-- BOTTOM PLAYBACK BAR -->
+    <div id="playback-bar" class="playback-bar hidden">
+        <div class="playback-left">
+            <div class="playback-song-title-artist">
+                <h3 id="playback-song-name" class="playback-song-name">JUMP</h3>
+                <p id="playback-song-artist" class="playback-song-artist">Blackpink</p>
+            </div>
+        </div>
+
+        <div class="playback-center">
+            <div class="playback-progress-container">
+                <div class="playback-progress-bar">
+                    <div class="playback-progress-filled">
+                        <div class="playback-progress-thumb"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="playback-controls-row">
+                <button class="playback-control-btn shuffle-btn" id="shuffle-control">
+                    <img src="public/shuffle.png" alt="Shuffle">
+                </button>
+                <button class="playback-control-btn prev-btn" id="prev-control">
+                    <img src="public/play-next-song.png" alt="Previous Song">
+                </button>
+                <button class="playback-control-btn rewind-btn" id="rewind-control">
+                    <img src="public/play-next.png" alt="Rewind 10s">
+                </button>
+                <button class="playback-control-btn play-control" id="play-pause-control">
+                    <img src="public/play-button-white.png" alt="Play" id="play-icon">
+                </button>
+                <button class="playback-control-btn forward-btn" id="forward-control">
+                    <img src="public/play-next.png" alt="Forward 10s">
+                </button>
+                <button class="playback-control-btn next-btn" id="next-control">
+                    <img src="public/play-next-song.png" alt="Next Song">
+                </button>
+                <button class="playback-control-btn repeat-btn" id="repeat-control">
+                    <img src="public/undo.png" alt="Repeat">
+                </button>
+            </div>
+        </div>
+
+        <div class="playback-right">
+            <div class="playback-likes">
+                <span class="playback-heart">❤</span>
+                <span id="playback-like-count" class="playback-like-count">1,000,000</span>
+            </div>
+            <button class="playback-queue-btn" id="toggle-queue-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
+                </svg>
+            </button>
+            <button class="playback-close-btn" id="close-playback-btn">✕</button>
+        </div>
+    </div>
+
+    <!-- QUEUE SIDEBAR (Right side) -->
+    <div id="queue-sidebar" class="queue-sidebar hidden">
+        <div class="queue-header">
+            <h3>Up Next</h3>
+            <button id="close-queue-btn" class="close-queue-btn">✕</button>
+        </div>
+        <div id="queue-list" class="queue-list">
+            <!-- Songs will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- YouTube IFrame Player (hidden) -->
+    <div id="youtube-player" style="display: none;"></div>
+
+    <!-- Featured Playlist Button (Fixed at bottom) -->
+    <a href="featured.html" class="featured-floating-btn">
+        Featured Playlist
+    </a>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
