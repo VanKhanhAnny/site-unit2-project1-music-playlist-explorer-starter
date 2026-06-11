@@ -139,7 +139,7 @@ Estimated time spent: **12** hours spent in total
 
 ### Walkthrough Video
 
-**Walkthrough video:** [Music Playlist Explorer Walkthrough](ADD_LOOM_LINK_HERE)
+**Walkthrough video:** [Music Playlist Explorer Walkthrough](https://www.loom.com/share/a4a2c94a8d834d5ab855fb627977eb96)
 
 ### Reflection
 
