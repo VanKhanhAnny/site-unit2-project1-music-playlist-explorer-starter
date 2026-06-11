@@ -2,7 +2,7 @@
 
 Submitted by: **Anny Dang**
 
-Estimated time spent: **30** hours spent in total
+Estimated time spent: **12** hours spent in total
 
 ### Application Features
 

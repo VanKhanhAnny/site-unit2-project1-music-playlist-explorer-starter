@@ -1,4 +1,3 @@
-// YouTube API Helper Functions
 const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
 // Fetch playlist details (cover, title, author, like count)
