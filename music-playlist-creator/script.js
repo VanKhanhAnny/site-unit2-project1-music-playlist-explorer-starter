@@ -184,6 +184,7 @@ const progressFilled = document.querySelector('.playback-progress-filled');
 const progressThumb = document.querySelector('.playback-progress-thumb');
 const searchInput = document.getElementById('search-input');
 const searchDropdown = document.getElementById('search-dropdown');
+const clearSearchBtn = document.getElementById('clear-search-btn');
 const addCategoryBtn = document.getElementById('add-category-btn');
 const addCategoryModal = document.getElementById('add-category-modal');
 const closeAddCategoryModal = document.getElementById('close-add-category-modal');
@@ -574,6 +575,11 @@ function attachEventListeners() {
         searchInput.addEventListener('input', handleSearch);
     }
 
+    // Clear search button
+    if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', clearSearch);
+    }
+
     // Close search dropdown when clicking outside
     document.addEventListener('click', (e) => {
         if (searchDropdown && !searchDropdown.contains(e.target) && e.target !== searchInput) {
@@ -941,6 +947,15 @@ function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase().trim();
     const normalizedSearchTerm = removeVietnameseTones(searchTerm);
 
+    // Show/hide clear button based on input
+    if (clearSearchBtn) {
+        if (searchTerm) {
+            clearSearchBtn.classList.remove('hidden');
+        } else {
+            clearSearchBtn.classList.add('hidden');
+        }
+    }
+
     if (!searchTerm) {
         // Hide dropdown
         if (searchDropdown) {
@@ -998,6 +1013,20 @@ function handleSearch(e) {
 
     // Render dropdown
     renderSearchDropdown(playlistResults, songResults);
+}
+
+// Clear search input and hide dropdown
+function clearSearch() {
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    if (searchDropdown) {
+        searchDropdown.classList.add('hidden');
+        searchDropdown.innerHTML = '';
+    }
+    if (clearSearchBtn) {
+        clearSearchBtn.classList.add('hidden');
+    }
 }
 
 // Render search dropdown
