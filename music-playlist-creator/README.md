@@ -167,10 +167,6 @@ The Vietnamese search feature surprised people in a good way. When I typed "mat"
 
 What didn't go great was when I tried to show the Featured Page and accidentally clicked back to the homepage before it finished loading. There was this awkward pause where it just said "Loading..." and I realized I'd opened the app in a fresh incognito window so there was no cache. It looked broken for a few seconds until I figured out what happened. Definitely should have tested in the exact browser window I was gonna use for the demo.
 
-Also, during the Q&A someone asked where the button is to see more info about a playlist, and I had to explain that you right-click on the card. Their confused face pretty much confirmed what I already suspected, that the right-click interaction isn't discoverable at all. It works but it's not intuitive.
-
-One of my peers built their app with these really smooth fade transitions when navigating between pages. It was just a simple CSS animation but it made the whole experience feel so much more polished and professional. I want to learn how to add those kinds of micro-interactions because they really elevate the UX without being complicated.
-
 ### Open-source libraries used
 
 [YouTube Data API v3](https://developers.google.com/youtube/v3)
