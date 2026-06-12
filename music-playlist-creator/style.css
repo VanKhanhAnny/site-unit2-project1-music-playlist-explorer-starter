@@ -66,10 +66,6 @@ body::-webkit-scrollbar {
     box-shadow: 0 12px 32px rgba(255, 200, 100, 0.4);
 }
 
-/* When playback bar is visible, move button up */
-body:has(.playback-bar:not([style*="display: none"])) .featured-floating-btn {
-    bottom: 160px;
-}
 
 /* HERO SECTION */
 #hero {
@@ -1242,6 +1238,348 @@ body:has(.playback-bar:not([style*="display: none"])) .featured-floating-btn {
 /* Utility class */
 .hidden {
     display: none !important;
+}
+
+/* NEW UNIFIED PLAYLIST PLAYER MODAL */
+.playlist-player-modal-box {
+    position: relative;
+    width: 90vw;
+    max-width: 1400px;
+    height: 85vh;
+    max-height: 900px;
+    background: rgba(150, 100, 90, 0.98);
+    backdrop-filter: blur(30px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.player-modal-content {
+    display: flex;
+    height: 100%;
+    padding: 40px;
+    gap: 40px;
+}
+
+/* LEFT SIDE - Player Controls */
+.player-modal-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-right: 40px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.player-modal-left::-webkit-scrollbar {
+    width: 8px;
+}
+
+.player-modal-left::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.player-modal-left::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.player-modal-left::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.player-modal-cover {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.player-modal-info {
+    text-align: center;
+    width: 100%;
+}
+
+.player-modal-song-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.player-modal-artist {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 4px 0;
+}
+
+.player-modal-playlist-name {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+/* Progress Bar */
+.player-modal-progress-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 20px;
+}
+
+.player-modal-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(60, 30, 20, 0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+}
+
+.player-modal-progress-filled {
+    height: 100%;
+    background: #260600;
+    border-radius: 4px;
+    width: 0%;
+    position: relative;
+    transition: width 0.1s linear;
+}
+
+.player-modal-progress-thumb {
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: #260600;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Playback Controls */
+.player-modal-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.player-modal-control-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-modal-control-btn:hover {
+    transform: scale(1.1);
+}
+
+.player-modal-control-btn img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+}
+
+.player-modal-control-btn:first-child img,
+.player-modal-control-btn:last-child img {
+    width: 24px;
+    height: 24px;
+    opacity: 0.7;
+}
+
+.player-modal-control-btn:nth-child(2) img,
+.player-modal-control-btn:nth-child(3) img {
+    transform: scaleX(-1);
+}
+
+.player-modal-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.player-modal-play-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+.player-modal-play-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Likes */
+.player-modal-likes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    color: white;
+}
+
+.player-modal-heart {
+    font-size: 20px;
+}
+
+.player-modal-like-count {
+    font-weight: 600;
+}
+
+/* Get Description Button */
+.player-modal-get-description-btn {
+    margin-top: 12px;
+    padding: 12px 32px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.player-modal-get-description-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.player-modal-get-description-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.player-modal-ai-description-container {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    max-width: 500px;
+}
+
+.player-modal-ai-description-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: white;
+    margin: 0;
+}
+
+/* RIGHT SIDE - Song List */
+.player-modal-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.player-modal-queue-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 20px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.player-modal-song-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.player-modal-song-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.player-modal-song-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.player-modal-song-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.player-modal-song-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.player-modal-song-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+}
+
+.player-modal-song-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.player-modal-song-item.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.player-modal-song-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    min-width: 30px;
+}
+
+.player-modal-song-item.active .player-modal-song-number {
+    color: white;
+}
+
+.player-modal-song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.player-modal-song-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-modal-song-artist {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-modal-song-duration {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    min-width: 50px;
+    text-align: right;
 }
 
 /* BOTTOM PLAYBACK BAR (like your design) */

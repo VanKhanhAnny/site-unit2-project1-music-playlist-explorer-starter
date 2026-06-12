@@ -154,34 +154,33 @@ const playlists = [
 let currentPlaylist = null;
 let currentSongIndex = 0;
 let isPlaying = false;
-let queueVisible = false;
-let isRepeatOn = false; // Track repeat mode
 let player = null; // YouTube IFrame Player instance
 let playerReady = false; // Track if player is ready
 let categories = []; // Store all categories with their playlists
 let currentCategoryForAdd = null; // Track which category we're adding playlist to
 
-// DOM Elements
-const playbackBar = document.getElementById('playback-bar');
-const queueSidebar = document.getElementById('queue-sidebar');
-const playbackSongName = document.getElementById('playback-song-name');
-const playbackSongArtist = document.getElementById('playback-song-artist');
-const playbackLikeCount = document.getElementById('playback-like-count');
-const playPauseControl = document.getElementById('play-pause-control');
-const playIcon = document.getElementById('play-icon');
-const shuffleControl = document.getElementById('shuffle-control');
-const prevControl = document.getElementById('prev-control');
-const nextControl = document.getElementById('next-control');
-const repeatControl = document.getElementById('repeat-control');
-const rewindControl = document.getElementById('rewind-control');
-const forwardControl = document.getElementById('forward-control');
-const toggleQueueBtn = document.getElementById('toggle-queue-btn');
-const closeQueueBtn = document.getElementById('close-queue-btn');
-const closePlaybackBtn = document.getElementById('close-playback-btn');
-const queueList = document.getElementById('queue-list');
-const progressBar = document.querySelector('.playback-progress-bar');
-const progressFilled = document.querySelector('.playback-progress-filled');
-const progressThumb = document.querySelector('.playback-progress-thumb');
+// DOM Elements - New Player Modal
+const playerModal = document.getElementById('playlist-player-modal');
+const closePlayerModal = document.getElementById('close-player-modal');
+const playerModalCover = document.getElementById('player-modal-cover');
+const playerModalSongTitle = document.getElementById('player-modal-song-title');
+const playerModalArtist = document.getElementById('player-modal-artist');
+const playerModalPlaylistName = document.getElementById('player-modal-playlist-name');
+const playerModalLikeCount = document.getElementById('player-modal-like-count');
+const playerModalPlayPause = document.getElementById('player-modal-play-pause');
+const playerModalPlayIcon = document.getElementById('player-modal-play-icon');
+const playerModalShuffle = document.getElementById('player-modal-shuffle');
+const playerModalPrev = document.getElementById('player-modal-prev');
+const playerModalNext = document.getElementById('player-modal-next');
+const playerModalRepeat = document.getElementById('player-modal-repeat');
+const playerModalRewind = document.getElementById('player-modal-rewind');
+const playerModalForward = document.getElementById('player-modal-forward');
+const playerModalSongList = document.getElementById('player-modal-song-list');
+const playerModalProgressBar = document.getElementById('player-modal-progress-bar');
+const playerModalProgressFilled = document.getElementById('player-modal-progress-filled');
+const playerModalGetDescriptionBtn = document.getElementById('player-modal-get-description-btn');
+const playerModalAiDescriptionContainer = document.getElementById('player-modal-ai-description-container');
+const playerModalAiDescriptionText = document.getElementById('player-modal-ai-description-text');
 const searchInput = document.getElementById('search-input');
 const searchDropdown = document.getElementById('search-dropdown');
 const clearSearchBtn = document.getElementById('clear-search-btn');
@@ -197,15 +196,6 @@ const playlistUrlInput = document.getElementById('playlist-url-input');
 const submitPlaylistBtn = document.getElementById('submit-playlist-btn');
 const addPlaylistStatus = document.getElementById('add-playlist-status');
 const playlistCategoryName = document.getElementById('playlist-category-name');
-const playlistDetailModal = document.getElementById('playlist-detail-modal');
-const closePlaylistDetailModal = document.getElementById('close-playlist-detail-modal');
-const detailPlaylistCover = document.getElementById('detail-playlist-cover');
-const detailPlaylistName = document.getElementById('detail-playlist-name');
-const detailPlaylistAuthor = document.getElementById('detail-playlist-author');
-const getDescriptionBtn = document.getElementById('get-description-btn');
-const aiDescriptionContainer = document.getElementById('ai-description-container');
-const aiDescriptionText = document.getElementById('ai-description-text');
-let currentDetailPlaylist = null;
 
 // YouTube IFrame API Ready Callback 
 window.onYouTubeIframeAPIReady = function() {
@@ -243,27 +233,20 @@ function onPlayerReady(event) {
 // Update progress bar based on current playback time
 function updateProgressBar() {
     if (!player || !player.getCurrentTime || !player.getDuration) {
-        console.log('Progress update skipped: player not ready');
         return;
     }
     if (!isPlaying) {
-        console.log('Progress update skipped: not playing');
         return;
     }
 
     const currentTime = player.getCurrentTime();
     const duration = player.getDuration();
 
-    console.log('Updating progress:', currentTime, '/', duration);
-
     if (duration > 0) {
         const percentage = (currentTime / duration) * 100;
-        console.log('Setting width to:', percentage + '%');
-        if (progressFilled) {
-            progressFilled.style.width = percentage + '%';
+        if (playerModalProgressFilled) {
+            playerModalProgressFilled.style.width = percentage + '%';
         }
-        // The thumb is positioned inside progressFilled with CSS (right: -8px)
-        // So it automatically moves with the filled bar
     }
 }
 
@@ -274,15 +257,15 @@ function onPlayerStateChange(event) {
         playNext();
     } else if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
-        if (playIcon) {
-            playIcon.src = 'public/pause.png';
-            playIcon.alt = 'Pause';
+        if (playerModalPlayIcon) {
+            playerModalPlayIcon.src = 'public/pause.png';
+            playerModalPlayIcon.alt = 'Pause';
         }
     } else if (event.data === YT.PlayerState.PAUSED) {
         isPlaying = false;
-        if (playIcon) {
-            playIcon.src = 'public/play-button-white.png';
-            playIcon.alt = 'Play';
+        if (playerModalPlayIcon) {
+            playerModalPlayIcon.src = 'public/play-button-white.png';
+            playerModalPlayIcon.alt = 'Play';
         }
     }
 }
@@ -503,15 +486,9 @@ function createPlaylistCard(playlist) {
         </div>
     `;
 
-    // Card click - start playing immediately
+    // Card click - open player modal and start playing
     card.addEventListener('click', () => {
         loadPlaylist(playlist.id, 0);
-    });
-
-    // Right-click - open detail modal
-    card.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        openPlaylistDetailModal(playlist);
     });
 
     // Like button click
@@ -528,21 +505,20 @@ function createPlaylistCard(playlist) {
 
 // Attach event listeners
 function attachEventListeners() {
-    // Playback controls
-    if (playPauseControl) playPauseControl.addEventListener('click', togglePlayPause);
-    if (prevControl) prevControl.addEventListener('click', playPrevious);
-    if (nextControl) nextControl.addEventListener('click', playNext);
-    if (shuffleControl) shuffleControl.addEventListener('click', shufflePlaylist);
-    if (repeatControl) repeatControl.addEventListener('click', toggleRepeat);
-    if (rewindControl) rewindControl.addEventListener('click', rewind);
-    if (forwardControl) forwardControl.addEventListener('click', forward);
+    // Player modal controls
+    if (playerModalPlayPause) playerModalPlayPause.addEventListener('click', togglePlayPause);
+    if (playerModalPrev) playerModalPrev.addEventListener('click', playPrevious);
+    if (playerModalNext) playerModalNext.addEventListener('click', playNext);
+    if (playerModalShuffle) playerModalShuffle.addEventListener('click', shufflePlaylist);
+    if (playerModalRepeat) playerModalRepeat.addEventListener('click', toggleRepeat);
+    if (playerModalRewind) playerModalRewind.addEventListener('click', rewind);
+    if (playerModalForward) playerModalForward.addEventListener('click', forward);
 
-    // Queue controls
-    if (toggleQueueBtn) toggleQueueBtn.addEventListener('click', toggleQueue);
-    if (closeQueueBtn) closeQueueBtn.addEventListener('click', toggleQueue);
+    // Close player modal
+    if (closePlayerModal) closePlayerModal.addEventListener('click', closePlayback);
 
-    // Close playback bar
-    if (closePlaybackBtn) closePlaybackBtn.addEventListener('click', closePlayback);
+    // Player modal - Get AI Description
+    if (playerModalGetDescriptionBtn) playerModalGetDescriptionBtn.addEventListener('click', handleGetDescription);
 
     // Add category modal
     if (addCategoryBtn) addCategoryBtn.addEventListener('click', openAddCategoryModal);
@@ -570,6 +546,14 @@ function attachEventListeners() {
         });
     }
 
+    if (playerModal) {
+        playerModal.addEventListener('click', (e) => {
+            if (e.target === playerModal) {
+                closePlayback();
+            }
+        });
+    }
+
     // Search functionality
     if (searchInput) {
         searchInput.addEventListener('input', handleSearch);
@@ -587,25 +571,12 @@ function attachEventListeners() {
         }
     });
 
-    // Playlist detail modal
-    if (closePlaylistDetailModal) closePlaylistDetailModal.addEventListener('click', closePlaylistDetailModalHandler);
-    if (getDescriptionBtn) getDescriptionBtn.addEventListener('click', handleGetDescription);
-
-    // Close playlist detail modal when clicking outside
-    if (playlistDetailModal) {
-        playlistDetailModal.addEventListener('click', (e) => {
-            if (e.target === playlistDetailModal) {
-                closePlaylistDetailModalHandler();
-            }
-        });
-    }
-
     // Progress bar click to seek
-    if (progressBar) {
-        progressBar.addEventListener('click', (e) => {
+    if (playerModalProgressBar) {
+        playerModalProgressBar.addEventListener('click', (e) => {
             if (!player || !player.getDuration) return;
 
-            const rect = progressBar.getBoundingClientRect();
+            const rect = playerModalProgressBar.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const percentage = clickX / rect.width;
             const duration = player.getDuration();
@@ -625,91 +596,87 @@ function loadPlaylist(playlistId, songIndex = 0) {
     currentPlaylist = playlist;
     currentSongIndex = songIndex;
 
-    // Update playback bar
-    updatePlaybackBar();
+    // Update modal displays
+    updatePlayerModal();
 
-    // Update queue
-    updateQueue();
+    // Update song list
+    updateSongList();
 
-    // Show playback bar
-    playbackBar.classList.remove('hidden');
+    // Show player modal
+    if (playerModal) {
+        playerModal.classList.remove('hidden');
+    }
 
     // Reset progress bar
-    if (progressFilled) {
-        progressFilled.style.width = '0%';
+    if (playerModalProgressFilled) {
+        playerModalProgressFilled.style.width = '0%';
     }
 
     // Load and play video if player is ready and song has videoId
     const currentSong = currentPlaylist.songs[currentSongIndex];
-    console.log('Loading song:', currentSong);
-    console.log('Player ready?', playerReady);
-    console.log('Has videoId?', currentSong.videoId);
 
     if (playerReady && player && currentSong.videoId) {
-        console.log('Loading video:', currentSong.videoId);
         player.loadVideoById(currentSong.videoId);
         isPlaying = true;
-        if (playIcon) {
-            playIcon.src = 'public/pause.png';
-            playIcon.alt = 'Pause';
+        if (playerModalPlayIcon) {
+            playerModalPlayIcon.src = 'public/pause.png';
+            playerModalPlayIcon.alt = 'Pause';
         }
     } else if (!playerReady) {
-        console.warn('Player not ready yet, waiting...');
         // Wait for player to be ready
         const checkReady = setInterval(() => {
             if (playerReady && player) {
                 clearInterval(checkReady);
-                console.log('Player now ready, loading video:', currentSong.videoId);
                 player.loadVideoById(currentSong.videoId);
                 isPlaying = true;
-                if (playIcon) {
-                    playIcon.src = 'public/pause.png';
-                    playIcon.alt = 'Pause';
+                if (playerModalPlayIcon) {
+                    playerModalPlayIcon.src = 'public/pause.png';
+                    playerModalPlayIcon.alt = 'Pause';
                 }
             }
         }, 100);
-    } else {
-        console.error('Cannot play - no videoId');
     }
 }
 
-// Update playback bar with current song
-function updatePlaybackBar() {
+// Update player modal with current song info
+function updatePlayerModal() {
     if (!currentPlaylist) return;
 
     const currentSong = currentPlaylist.songs[currentSongIndex];
 
-    if (playbackSongName) playbackSongName.textContent = currentSong.title.toUpperCase();
-    if (playbackSongArtist) playbackSongArtist.textContent = currentPlaylist.author;
-    if (playbackLikeCount) playbackLikeCount.textContent = currentPlaylist.likes.toLocaleString();
+    if (playerModalCover) playerModalCover.src = currentPlaylist.cover;
+    if (playerModalSongTitle) playerModalSongTitle.textContent = currentSong.title;
+    if (playerModalArtist) playerModalArtist.textContent = currentSong.artist;
+    if (playerModalPlaylistName) playerModalPlaylistName.textContent = currentPlaylist.name;
+    if (playerModalLikeCount) playerModalLikeCount.textContent = currentPlaylist.likes.toLocaleString();
 }
 
-// Update queue list
-function updateQueue() {
-    if (!currentPlaylist) return;
+// Update song list in modal
+function updateSongList() {
+    if (!currentPlaylist || !playerModalSongList) return;
 
-    queueList.innerHTML = '';
+    playerModalSongList.innerHTML = '';
 
     currentPlaylist.songs.forEach((song, index) => {
-        const queueItem = document.createElement('div');
-        queueItem.className = 'queue-song-item';
+        const songItem = document.createElement('div');
+        songItem.className = 'player-modal-song-item';
         if (index === currentSongIndex) {
-            queueItem.classList.add('active');
+            songItem.classList.add('active');
         }
 
-        queueItem.innerHTML = `
-            <img class="queue-song-thumbnail" src="${currentPlaylist.cover}" alt="${song.title}">
-            <div class="queue-song-info">
-                <p class="queue-song-name">${song.title}</p>
-                <p class="queue-song-artist">${song.artist}</p>
+        songItem.innerHTML = `
+            <span class="player-modal-song-number">${index + 1}</span>
+            <div class="player-modal-song-info">
+                <p class="player-modal-song-title">${song.title}</p>
+                <p class="player-modal-song-artist">${song.artist}</p>
             </div>
-            <span class="queue-song-duration">${song.duration}</span>
+            <span class="player-modal-song-duration">${song.duration}</span>
         `;
 
-        queueItem.addEventListener('click', () => {
+        songItem.addEventListener('click', () => {
             currentSongIndex = index;
-            updatePlaybackBar();
-            updateQueue();
+            updatePlayerModal();
+            updateSongList();
 
             // Load and play the selected video
             const selectedSong = currentPlaylist.songs[currentSongIndex];
@@ -718,7 +685,7 @@ function updateQueue() {
             }
         });
 
-        queueList.appendChild(queueItem);
+        playerModalSongList.appendChild(songItem);
     });
 }
 
@@ -759,8 +726,8 @@ function playPrevious() {
         currentSongIndex = currentPlaylist.songs.length - 1;
     }
 
-    updatePlaybackBar();
-    updateQueue();
+    updatePlayerModal();
+    updateSongList();
 
     // Load previous video
     const currentSong = currentPlaylist.songs[currentSongIndex];
@@ -773,25 +740,13 @@ function playPrevious() {
 function playNext() {
     if (!currentPlaylist) return;
 
-    // If repeat is on, replay the current song
-    if (isRepeatOn) {
-        console.log('🔁 Repeat is ON - replaying current song');
-        const currentSong = currentPlaylist.songs[currentSongIndex];
-        if (player && player.loadVideoById && currentSong.videoId) {
-            player.loadVideoById(currentSong.videoId);
-        }
-        return;
-    }
-
-    console.log('➡️ Repeat is OFF - playing next song');
-
     currentSongIndex++;
     if (currentSongIndex >= currentPlaylist.songs.length) {
         currentSongIndex = 0;
     }
 
-    updatePlaybackBar();
-    updateQueue();
+    updatePlayerModal();
+    updateSongList();
 
     // Load next video
     const currentSong = currentPlaylist.songs[currentSongIndex];
@@ -804,8 +759,6 @@ function playNext() {
 function shufflePlaylist() {
     if (!currentPlaylist) return;
 
-    console.log('Shuffling playlist...');
-
     // Fisher-Yates shuffle
     const songs = [...currentPlaylist.songs];
     for (let i = songs.length - 1; i > 0; i--) {
@@ -816,8 +769,8 @@ function shufflePlaylist() {
     currentPlaylist.songs = songs;
     currentSongIndex = 0;
 
-    updatePlaybackBar();
-    updateQueue();
+    updatePlayerModal();
+    updateSongList();
 
     // Start playing the first shuffled song
     const currentSong = currentPlaylist.songs[currentSongIndex];
@@ -830,8 +783,6 @@ function shufflePlaylist() {
 function toggleRepeat() {
     if (!currentPlaylist || !player) return;
 
-    console.log('🔁 Restarting current song');
-
     // Restart the current song from beginning
     const currentSong = currentPlaylist.songs[currentSongIndex];
     if (player && player.loadVideoById && currentSong.videoId) {
@@ -839,27 +790,15 @@ function toggleRepeat() {
     }
 
     // Visual feedback - flash the button
-    if (repeatControl) {
-        repeatControl.style.transform = 'scale(1.2)';
+    if (playerModalRepeat) {
+        playerModalRepeat.style.transform = 'scale(1.2)';
         setTimeout(() => {
-            repeatControl.style.transform = 'scale(1)';
+            playerModalRepeat.style.transform = 'scale(1)';
         }, 200);
     }
 }
 
-// Toggle queue visibility
-function toggleQueue() {
-    queueVisible = !queueVisible;
-    if (queueVisible) {
-        queueSidebar.classList.remove('hidden');
-        playbackBar.classList.add('queue-open');
-    } else {
-        queueSidebar.classList.add('hidden');
-        playbackBar.classList.remove('queue-open');
-    }
-}
-
-// Close playback bar and stop music
+// Close player modal and stop music
 function closePlayback() {
     // Stop the player
     if (player && player.stopVideo) {
@@ -871,26 +810,20 @@ function closePlayback() {
     currentPlaylist = null;
     currentSongIndex = 0;
 
-    // Hide playback bar
-    if (playbackBar) {
-        playbackBar.classList.add('hidden');
-    }
-
-    // Hide queue if open
-    if (!queueSidebar.classList.contains('hidden')) {
-        queueSidebar.classList.add('hidden');
-        queueVisible = false;
+    // Hide player modal
+    if (playerModal) {
+        playerModal.classList.add('hidden');
     }
 
     // Reset progress bar
-    if (progressFilled) {
-        progressFilled.style.width = '0%';
+    if (playerModalProgressFilled) {
+        playerModalProgressFilled.style.width = '0%';
     }
 
     // Reset play icon
-    if (playIcon) {
-        playIcon.src = 'public/play-button-white.png';
-        playIcon.alt = 'Play';
+    if (playerModalPlayIcon) {
+        playerModalPlayIcon.src = 'public/play-button-white.png';
+        playerModalPlayIcon.alt = 'Play';
     }
 }
 
@@ -1180,64 +1113,35 @@ async function getPlaylistDescription(playlist) {
     return makeRequest();
 }
 
-// Open playlist detail modal
-function openPlaylistDetailModal(playlist) {
-    currentDetailPlaylist = playlist;
-
-    if (playlistDetailModal) {
-        if (detailPlaylistCover) detailPlaylistCover.src = playlist.cover;
-        if (detailPlaylistName) detailPlaylistName.textContent = playlist.name;
-        if (detailPlaylistAuthor) detailPlaylistAuthor.textContent = `by ${playlist.author}`;
-
-        // Hide description container and reset
-        if (aiDescriptionContainer) aiDescriptionContainer.classList.add('hidden');
-        if (aiDescriptionText) aiDescriptionText.textContent = '';
-        if (getDescriptionBtn) {
-            getDescriptionBtn.textContent = 'Get AI Description';
-            getDescriptionBtn.disabled = false;
-        }
-
-        playlistDetailModal.classList.remove('hidden');
-    }
-}
-
-// Close playlist detail modal
-function closePlaylistDetailModalHandler() {
-    if (playlistDetailModal) {
-        playlistDetailModal.classList.add('hidden');
-    }
-    currentDetailPlaylist = null;
-}
-
-// Handle get description button click
+// Handle get description button click (in player modal)
 async function handleGetDescription() {
-    if (!currentDetailPlaylist) return;
+    if (!currentPlaylist) return;
 
     // Show loading state
-    if (getDescriptionBtn) {
-        getDescriptionBtn.textContent = 'Generating description...';
-        getDescriptionBtn.disabled = true;
+    if (playerModalGetDescriptionBtn) {
+        playerModalGetDescriptionBtn.textContent = 'Generating description...';
+        playerModalGetDescriptionBtn.disabled = true;
     }
 
-    if (aiDescriptionContainer) {
-        aiDescriptionContainer.classList.remove('hidden');
+    if (playerModalAiDescriptionContainer) {
+        playerModalAiDescriptionContainer.classList.remove('hidden');
     }
 
-    if (aiDescriptionText) {
-        aiDescriptionText.textContent = 'Generating description...';
+    if (playerModalAiDescriptionText) {
+        playerModalAiDescriptionText.textContent = 'Generating description...';
     }
 
     // Call AI API
-    const description = await getPlaylistDescription(currentDetailPlaylist);
+    const description = await getPlaylistDescription(currentPlaylist);
 
     // Display result
-    if (aiDescriptionText) {
-        aiDescriptionText.textContent = description;
+    if (playerModalAiDescriptionText) {
+        playerModalAiDescriptionText.textContent = description;
     }
 
-    if (getDescriptionBtn) {
-        getDescriptionBtn.textContent = 'Get AI Description';
-        getDescriptionBtn.disabled = false;
+    if (playerModalGetDescriptionBtn) {
+        playerModalGetDescriptionBtn.textContent = 'Get AI Description';
+        playerModalGetDescriptionBtn.disabled = false;
     }
 }
 
@@ -1485,15 +1389,9 @@ function renderCategories() {
                 </div>
             `;
 
-            // Card click - start playing
+            // Card click - open player modal and start playing
             card.addEventListener('click', () => {
                 loadPlaylist(playlist.id, 0);
-            });
-
-            // Right-click - open detail modal
-            card.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                openPlaylistDetailModal(playlist);
             });
 
             // Like button

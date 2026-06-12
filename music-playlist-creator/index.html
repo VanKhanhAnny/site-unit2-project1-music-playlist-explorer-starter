@@ -117,16 +117,76 @@
         </div>
     </div>
 
-    <!-- Playlist Detail Modal -->
-    <div id="playlist-detail-modal" class="modal-overlay hidden">
-        <div class="playlist-detail-modal-box">
-            <button class="modal-close" id="close-playlist-detail-modal">✕</button>
-            <img id="detail-playlist-cover" class="detail-playlist-cover" src="" alt="Playlist cover">
-            <h2 id="detail-playlist-name" class="detail-playlist-name"></h2>
-            <p id="detail-playlist-author" class="detail-playlist-author"></p>
-            <button id="get-description-btn" class="get-description-btn">Get AI Description</button>
-            <div id="ai-description-container" class="ai-description-container hidden">
-                <p id="ai-description-text" class="ai-description-text"></p>
+    <!-- New Unified Playlist Player Modal -->
+    <div id="playlist-player-modal" class="modal-overlay hidden">
+        <div class="playlist-player-modal-box">
+            <button class="modal-close" id="close-player-modal">✕</button>
+
+            <div class="player-modal-content">
+                <!-- LEFT SIDE - Player Controls -->
+                <div class="player-modal-left">
+                    <img id="player-modal-cover" class="player-modal-cover" src="" alt="Playlist cover">
+
+                    <div class="player-modal-info">
+                        <h2 id="player-modal-song-title" class="player-modal-song-title">Song Title</h2>
+                        <p id="player-modal-artist" class="player-modal-artist">Artist</p>
+                        <p id="player-modal-playlist-name" class="player-modal-playlist-name">Playlist Name</p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="player-modal-progress-container">
+                        <div class="player-modal-progress-bar" id="player-modal-progress-bar">
+                            <div class="player-modal-progress-filled" id="player-modal-progress-filled">
+                                <div class="player-modal-progress-thumb"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Playback Controls -->
+                    <div class="player-modal-controls">
+                        <button class="player-modal-control-btn" id="player-modal-shuffle">
+                            <img src="public/shuffle.png" alt="Shuffle">
+                        </button>
+                        <button class="player-modal-control-btn" id="player-modal-prev">
+                            <img src="public/play-next-song.png" alt="Previous">
+                        </button>
+                        <button class="player-modal-control-btn" id="player-modal-rewind">
+                            <img src="public/play-next.png" alt="Rewind 10s">
+                        </button>
+                        <button class="player-modal-control-btn player-modal-play-btn" id="player-modal-play-pause">
+                            <img src="public/play-button-white.png" alt="Play" id="player-modal-play-icon">
+                        </button>
+                        <button class="player-modal-control-btn" id="player-modal-forward">
+                            <img src="public/play-next.png" alt="Forward 10s">
+                        </button>
+                        <button class="player-modal-control-btn" id="player-modal-next">
+                            <img src="public/play-next-song.png" alt="Next">
+                        </button>
+                        <button class="player-modal-control-btn" id="player-modal-repeat">
+                            <img src="public/undo.png" alt="Repeat">
+                        </button>
+                    </div>
+
+                    <!-- Like Count -->
+                    <div class="player-modal-likes">
+                        <span class="player-modal-heart">❤</span>
+                        <span id="player-modal-like-count" class="player-modal-like-count">0</span>
+                    </div>
+
+                    <!-- Get AI Description Button -->
+                    <button id="player-modal-get-description-btn" class="player-modal-get-description-btn">Get AI Description</button>
+                    <div id="player-modal-ai-description-container" class="player-modal-ai-description-container hidden">
+                        <p id="player-modal-ai-description-text" class="player-modal-ai-description-text"></p>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE - Song List -->
+                <div class="player-modal-right">
+                    <h3 class="player-modal-queue-title">Songs in Playlist</h3>
+                    <div id="player-modal-song-list" class="player-modal-song-list">
+                        <!-- Songs will be dynamically added here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -437,72 +497,6 @@
     </div>
 
 
-    <!-- BOTTOM PLAYBACK BAR -->
-    <div id="playback-bar" class="playback-bar hidden">
-        <div class="playback-left">
-            <div class="playback-song-title-artist">
-                <h3 id="playback-song-name" class="playback-song-name">JUMP</h3>
-                <p id="playback-song-artist" class="playback-song-artist">Blackpink</p>
-            </div>
-        </div>
-
-        <div class="playback-center">
-            <div class="playback-progress-container">
-                <div class="playback-progress-bar">
-                    <div class="playback-progress-filled">
-                        <div class="playback-progress-thumb"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="playback-controls-row">
-                <button class="playback-control-btn shuffle-btn" id="shuffle-control">
-                    <img src="public/shuffle.png" alt="Shuffle">
-                </button>
-                <button class="playback-control-btn prev-btn" id="prev-control">
-                    <img src="public/play-next-song.png" alt="Previous Song">
-                </button>
-                <button class="playback-control-btn rewind-btn" id="rewind-control">
-                    <img src="public/play-next.png" alt="Rewind 10s">
-                </button>
-                <button class="playback-control-btn play-control" id="play-pause-control">
-                    <img src="public/play-button-white.png" alt="Play" id="play-icon">
-                </button>
-                <button class="playback-control-btn forward-btn" id="forward-control">
-                    <img src="public/play-next.png" alt="Forward 10s">
-                </button>
-                <button class="playback-control-btn next-btn" id="next-control">
-                    <img src="public/play-next-song.png" alt="Next Song">
-                </button>
-                <button class="playback-control-btn repeat-btn" id="repeat-control">
-                    <img src="public/undo.png" alt="Repeat">
-                </button>
-            </div>
-        </div>
-
-        <div class="playback-right">
-            <div class="playback-likes">
-                <span class="playback-heart">❤</span>
-                <span id="playback-like-count" class="playback-like-count">1,000,000</span>
-            </div>
-            <button class="playback-queue-btn" id="toggle-queue-btn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/>
-                </svg>
-            </button>
-            <button class="playback-close-btn" id="close-playback-btn">✕</button>
-        </div>
-    </div>
-
-    <!-- QUEUE SIDEBAR (Right side) -->
-    <div id="queue-sidebar" class="queue-sidebar hidden">
-        <div class="queue-header">
-            <h3>Up Next</h3>
-            <button id="close-queue-btn" class="close-queue-btn">✕</button>
-        </div>
-        <div id="queue-list" class="queue-list">
-            <!-- Songs will be dynamically added here -->
-        </div>
-    </div>
 
     <!-- YouTube IFrame Player (hidden) -->
     <div id="youtube-player" style="display: none;"></div>
